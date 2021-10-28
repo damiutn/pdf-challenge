@@ -1,4 +1,4 @@
-﻿using System;
+﻿using PdfMerger.Domain;
 
 namespace PdfMerger
 {
@@ -6,7 +6,8 @@ namespace PdfMerger
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            if (args == null || args.Length == 0)
+                throw new BusinessException("At least one argument is needed");
         }
     }
 }
