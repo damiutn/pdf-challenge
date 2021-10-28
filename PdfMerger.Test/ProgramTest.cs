@@ -18,9 +18,9 @@ namespace PdfMerger.Test
         public void Test1()
         {
             //Arrage
-            List<string> urlWithPdfList = new List<string>();
+            var urlWithPdfList = new List<string>();
            
-            urlWithPdfList.Add(new Faker().Internet.UrlWithPath("http", null, "AnyThing"));//todo:fix extension in the next iteration
+            urlWithPdfList.Add(new Faker().Internet.UrlWithPath("http", null, "AnyThing"));
 
             //Act
             Action act =()=> Program.Main(urlWithPdfList.ToArray());
@@ -34,12 +34,31 @@ namespace PdfMerger.Test
         public void Test2()
         {
             //Arrage
-            List<string> urlWithPdfList = new List<string>();
+            var urlWithPdfList = new List<string>();
 
             //Act
             Action act = () => Program.Main(urlWithPdfList.ToArray());
             //Assert
             act.Should().Throw<BusinessException>("Exception is expected");
+
+        }
+
+        [Theory(DisplayName = "When call " + nameof(Program.Main) + " with url with invalid pdf extension, a business exception should be thrown")]
+        [InlineData("jjjj//invalidpdfurl")]
+        [InlineData("anything")]
+        [InlineData("http://jdudtggd   /anything")]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void Test3(string badUris)
+        {
+            //Arrage
+            var urlWithPdfList = new List<string>{ badUris };
+
+            //Act
+            Action act = () => Program.Main(urlWithPdfList.ToArray());
+            //Assert
+            act.Should().Throw<BusinessException>("Exception is not expected");
 
         }
     }
