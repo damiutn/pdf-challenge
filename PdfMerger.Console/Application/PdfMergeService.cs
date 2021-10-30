@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using PdfMerger.Domain;
 using PdfMerger.Domain.Exceptions;
+using PdfMerger.Shared;
 
 namespace PdfMerger.Application
 {
@@ -16,11 +18,13 @@ namespace PdfMerger.Application
     {
         private readonly IContentExtractor _contentExtractor;
         private readonly IPdf _pdf;
+        private readonly IOptions<PdfMergerOptions> _config;
 
-        public PdfMergeService(IContentExtractor contentExtractor, IPdf pdf)
+        public PdfMergeService(IContentExtractor contentExtractor, IPdf pdf,IOptions<PdfMergerOptions> config)
         {
             _contentExtractor = contentExtractor;
             _pdf = pdf;
+            _config = config;
         }
 
         public async Task<string> MergePdfsAsync(string[] urls)
@@ -30,7 +34,7 @@ namespace PdfMerger.Application
             var contents = _contentExtractor.GetContents(urls);
             var pdfMerged = _pdf.MergePdfs(contents);
 
-            string pathToSavePdf = ".\\pdfs\\";
+            string pathToSavePdf = _config.Value.PathToSaveMergedPdf;
             //Create the directory does not exist
             Directory.CreateDirectory(pathToSavePdf);
 

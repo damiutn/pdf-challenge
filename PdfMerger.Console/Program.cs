@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using PdfMerger.Application;
 using PdfMerger.Domain;
 using PdfMerger.Infrastructure;
+using PdfMerger.Shared;
 using Serilog;
 
 namespace PdfMerger
@@ -63,13 +64,14 @@ namespace PdfMerger
                 .Build();
 
             #region Inversion Of Control
-            //IoC
             serviceCollection.AddSingleton(Configuration);
             serviceCollection.AddTransient<IApp,App>();
             serviceCollection.AddTransient<IPdfMergeService, PdfMergeService>();
             serviceCollection.AddTransient<IPdf,Pdf>();
             serviceCollection.AddTransient<IExternalContentRepository,ExternalContentRepository>();
             serviceCollection.AddTransient<IContentExtractor,ContentExtractor>();
+            serviceCollection.Configure<PdfMergerOptions>(Configuration.GetSection("PdfMergerConfig"));
+
             #endregion
         }
 
