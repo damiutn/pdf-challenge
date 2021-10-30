@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using PdfMerger.Infrastructure;
 
 namespace PdfMerger.Domain
@@ -14,26 +14,31 @@ namespace PdfMerger.Domain
 
     public class ContentExtractor : IContentExtractor
     {
+        private readonly ILogger<ContentExtractor> _logger;
         private readonly IExternalContentRepository _externalContentRepository;
 
-        public ContentExtractor(IExternalContentRepository externalContentRepository)
+        public ContentExtractor(ILogger<ContentExtractor> logger, IExternalContentRepository externalContentRepository)
         {
+            _logger = logger;
             _externalContentRepository = externalContentRepository;
         }
         public List<byte[]> GetContents(string[] urls)
         {
-            List<Task<byte[]>> tasks = new List<Task<byte[]>>();
+            _logger.LogDebug($"url length {urls.Length}");
+            Task<byte[]>[] tasks = new Task<byte[]>[urls.Length];
             //Paralelize processing
-            Parallel.ForEach(urls, arg =>
+            //Implementing for instead of foreach to preserve the order of the items
+            Parallel.For(0, urls.Length, index =>
             {
-                Console.WriteLine($"Processing {Thread.CurrentThread.ManagedThreadId}");
+                _logger.LogDebug($"Processing with ThreadId {Thread.CurrentThread.ManagedThreadId}");
 
-                tasks.Add(_externalContentRepository.GetBinaryContentFromUlrAsync(arg));
+                tasks[index]=(_externalContentRepository.GetBinaryContentFromUlrAsync(urls[index]));
             });
+            
+            Task.WaitAll(tasks.ToArray());//Wait to finish process
 
-            Task.WaitAll(tasks.ToArray());
-
-            return tasks.Select(f => f.Result).ToList();
+            var bytesList = tasks.Select(f => f.Result).ToList();
+            return bytesList;
 
         }
     }

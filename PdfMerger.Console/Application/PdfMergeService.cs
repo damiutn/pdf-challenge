@@ -25,7 +25,7 @@ namespace PdfMerger.Application
 
         public async Task<string> MergePdfsAsync(string[] urls)
         {
-            ValidateUrlFormat(urls);
+            ValidateInput(urls);
 
             var contents = _contentExtractor.GetContents(urls);
             var pdfMerged = _pdf.MergePdfs(contents);
@@ -40,10 +40,10 @@ namespace PdfMerger.Application
             return file;
         }
 
-        private void ValidateUrlFormat(string[] urls)
+        private void ValidateInput(string[] urls)
         {
-            if (urls == null || urls.Length == 0)
-                throw new BusinessException("At least one argument is needed");
+            if (urls == null || urls.Length < 2)
+                throw new BusinessException("At least two arguments are required");
 
             List<string> badArguments = new List<string>();
 

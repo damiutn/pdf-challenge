@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PdfMerger": {
+      "commandName": "Project",
+      "commandLineArgs": "\"http://www.ucaldas.edu.co/admisiones/wp-content/uploads/2013/06/C%23U00f3mo-crear-archivos-en-formato-PDF.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\" \"https://www.argentina.gob.ar/sites/default/files/ley-de-educ-nac-58ac89392ea4c.pdf\""
+    }
+  }
+}

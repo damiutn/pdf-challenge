@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using PdfMerger.Domain.Exceptions;
 
 namespace PdfMerger.Domain
 {
@@ -15,6 +17,7 @@ namespace PdfMerger.Domain
     {
         public byte[] MergePdfs(List<byte[]> pdfContents)
         {
+            ValidateInput(pdfContents);
             using MemoryStream stream = new MemoryStream();
             Document doc = null;
             PdfCopy pdf = null;
@@ -51,6 +54,15 @@ namespace PdfMerger.Domain
             }
 
             return stream.ToArray();
+        }
+
+        private void ValidateInput(List<byte[]> pdfContents)
+        {
+            if (pdfContents.Count < 2)
+                throw new BusinessException("At least 2 items are required");
+
+            if(pdfContents.Any(f=>f.Length ==0))
+                throw new BusinessException("Invalid content");
         }
     }
 
