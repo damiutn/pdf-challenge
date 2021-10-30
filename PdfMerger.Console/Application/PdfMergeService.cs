@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using PdfMerger.Domain;
-using PdfMerger.Domain.Exception;
+using PdfMerger.Domain.Exceptions;
 
 namespace PdfMerger.Application
 {
-    public class PdfMergeService
+    public interface IPdfMergeService
     {
-        private readonly ContentExtractor _contentExtractor;
-        private readonly Pdf _pdf;
+        Task<string> MergePdfsAsync(string[] urls);
+    }
 
-        public PdfMergeService()
+    public class PdfMergeService : IPdfMergeService
+    {
+        private readonly IContentExtractor _contentExtractor;
+        private readonly IPdf _pdf;
+
+        public PdfMergeService(IContentExtractor contentExtractor, IPdf pdf)
         {
-            _contentExtractor = new ContentExtractor();
-            _pdf = new Pdf();
+            _contentExtractor = contentExtractor;
+            _pdf = pdf;
         }
 
-        public string MergePdfs(string[] urls)
+        public async Task<string> MergePdfsAsync(string[] urls)
         {
             ValidateUrlFormat(urls);
 
@@ -29,7 +35,7 @@ namespace PdfMerger.Application
             Directory.CreateDirectory(pathToSavePdf);
 
             string file = Path.Combine(pathToSavePdf, $"pdfMerged_{DateTime.Now:yyyyMMddHHmmss}.pdf");
-            File.WriteAllBytes(file, pdfMerged);
+            await File.WriteAllBytesAsync(file, pdfMerged);
 
             return file;
         }

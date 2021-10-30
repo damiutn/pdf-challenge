@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using PdfMerger.Domain.Exception;
+using PdfMerger.Domain.Exceptions;
 
 namespace PdfMerger.Infrastructure
 {
-    public class ExternalContentRepository
+    public interface IExternalContentRepository
+    {
+        Task<byte[]> GetBinaryContentFromUlrAsync(string url);
+    }
+
+    public class ExternalContentRepository : IExternalContentRepository
     {
         public async Task<byte[]> GetBinaryContentFromUlrAsync(string url)
         {

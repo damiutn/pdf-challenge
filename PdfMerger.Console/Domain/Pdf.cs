@@ -6,7 +6,12 @@ using iTextSharp.text.pdf;
 
 namespace PdfMerger.Domain
 {
-    public class Pdf
+    public interface IPdf
+    {
+        byte[] MergePdfs(List<byte[]> pdfContents);
+    }
+
+    public class Pdf : IPdf
     {
         public byte[] MergePdfs(List<byte[]> pdfContents)
         {

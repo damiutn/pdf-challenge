@@ -7,15 +7,23 @@ using PdfMerger.Infrastructure;
 
 namespace PdfMerger.Domain
 {
-    public class ContentExtractor
+    public interface IContentExtractor
     {
-        private readonly ExternalContentRepository _externalContentRepository = new();
+        List<byte[]> GetContents(string[] urls);
+    }
+
+    public class ContentExtractor : IContentExtractor
+    {
+        private readonly IExternalContentRepository _externalContentRepository;
+
+        public ContentExtractor(IExternalContentRepository externalContentRepository)
+        {
+            _externalContentRepository = externalContentRepository;
+        }
         public List<byte[]> GetContents(string[] urls)
         {
-            List<byte[]> contents = new List<byte[]>();
             List<Task<byte[]>> tasks = new List<Task<byte[]>>();
-
-           //Paralelize processing
+            //Paralelize processing
             Parallel.ForEach(urls, arg =>
             {
                 Console.WriteLine($"Processing {Thread.CurrentThread.ManagedThreadId}");

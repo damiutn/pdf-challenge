@@ -1,4 +1,4 @@
-namespace PdfMerger.Domain.Exception
+namespace PdfMerger.Domain.Exceptions
 {
     public class BusinessException:System.Exception
     {
