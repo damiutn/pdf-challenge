@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfMerger", "PdfMerger.Console\PdfMerger.csproj", "{B74B8037-71AF-4AD9-8AD5-B6693B06E73B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfMerger", "PdfMerger.Console\PdfMerger.csproj", "{B74B8037-71AF-4AD9-8AD5-B6693B06E73B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{84370E4E-6564-4A03-A344-764DE5172A28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{E52D2EFD-032A-4365-A06D-4DCDD33CFC20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfMerger.Test", "PdfMerger.Test\PdfMerger.Test.csproj", "{BAF643D0-63DA-41ED-A790-0DC1E9FB6A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfMerger.Test", "PdfMerger.Test\PdfMerger.Test.csproj", "{BAF643D0-63DA-41ED-A790-0DC1E9FB6A18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

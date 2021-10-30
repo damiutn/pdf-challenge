@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Bogus;
 using FluentAssertions;
-using PdfMerger.Domain;
+using PdfMerger.Domain.Exception;
 using Xunit;
 
 namespace PdfMerger.Test
@@ -39,7 +39,7 @@ namespace PdfMerger.Test
             //Act
             Action act = () => Program.Main(urlWithPdfList.ToArray());
             //Assert
-            act.Should().Throw<BusinessException>("Exception is expected");
+            act.Should().Throw<ArgumentException>("Exception is expected");
 
         }
 

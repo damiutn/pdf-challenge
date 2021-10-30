@@ -1,8 +1,6 @@
-using System;
-
-namespace PdfMerger.Domain
+namespace PdfMerger.Domain.Exception
 {
-    public class BusinessException:Exception
+    public class BusinessException:System.Exception
     {
         public BusinessException(string message):base(message)
         {
