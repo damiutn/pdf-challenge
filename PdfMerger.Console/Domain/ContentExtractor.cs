@@ -26,6 +26,7 @@ namespace PdfMerger.Domain
         {
             _logger.LogDebug($"url length {urls.Length}");
             Task<byte[]>[] tasks = new Task<byte[]>[urls.Length];
+            
             //Paralelize processing
             //Implementing "for" instead of "foreach" to preserve the order of the items
             Parallel.For(0, urls.Length, index =>
