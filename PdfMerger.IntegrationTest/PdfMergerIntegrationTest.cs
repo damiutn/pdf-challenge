@@ -21,7 +21,7 @@ namespace PdfMerger.IntegrationTest
             _resourceEmulator = resourceEmulator;
             _resourcesLoremIpsumPdf = ".\\Resources\\lorem-ipsum.pdf";
         }
-        [Fact(DisplayName = "When app is called with local pdf then it should respond ok and fast")]
+        [Fact(DisplayName = "When app is called with local pdf then it should respond ok")]
         public async Task Test01()
         {
             //arrage

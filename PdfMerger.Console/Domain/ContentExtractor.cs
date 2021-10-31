@@ -27,7 +27,7 @@ namespace PdfMerger.Domain
             _logger.LogDebug($"url length {urls.Length}");
             Task<byte[]>[] tasks = new Task<byte[]>[urls.Length];
             //Paralelize processing
-            //Implementing for instead of foreach to preserve the order of the items
+            //Implementing "for" instead of "foreach" to preserve the order of the items
             Parallel.For(0, urls.Length, index =>
             {
                 _logger.LogDebug($"Processing with ThreadId {Thread.CurrentThread.ManagedThreadId}");
@@ -35,7 +35,7 @@ namespace PdfMerger.Domain
                 tasks[index]=(_externalContentRepository.GetBinaryContentFromUlrAsync(urls[index]));
             });
             
-            Task.WaitAll(tasks.ToArray());//Wait to finish process
+            Task.WaitAll(tasks.ToArray());//Wait to finish all processes
 
             var bytesList = tasks.Select(f => f.Result).ToList();
             return bytesList;
