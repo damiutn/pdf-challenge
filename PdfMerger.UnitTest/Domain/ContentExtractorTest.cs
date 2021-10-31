@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using PdfMerger.Domain;
@@ -9,8 +10,8 @@ namespace PdfMerger.UnitTest.Domain
 {
     public class ContentExtractorTest
     {
-        [Fact(DisplayName = "When I call " + nameof(ContentExtractor.GetContents) + " It should return a list of contents")]
-        public void Test01()
+        [Fact(DisplayName = "When I call " + nameof(ContentExtractor.GetAllPdfAsync) + " It should return a list of contents")]
+        public async Task Test01()
         {
             //arrange
             var externalContentRepositoryMock = new Mock<IExternalContentRepository>();
@@ -22,7 +23,7 @@ namespace PdfMerger.UnitTest.Domain
                 .ReturnsAsync(value);
             //act
 
-            var result = contentExtractor.GetContents(param);
+            var result = await contentExtractor.GetAllPdfAsync(param,"");
             //assert
             result.Should().HaveCount(param.Length);
 

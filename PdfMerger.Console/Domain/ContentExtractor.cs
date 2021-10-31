@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace PdfMerger.Domain
 {
     public interface IContentExtractor
     {
-        List<byte[]> GetContents(string[] urls);
+        Task<string[]> GetAllPdfAsync(string[] urls, string pathToSaveTemporalPdf);
     }
 
     public class ContentExtractor : IContentExtractor
@@ -22,10 +23,11 @@ namespace PdfMerger.Domain
             _logger = logger;
             _externalContentRepository = externalContentRepository;
         }
-        public List<byte[]> GetContents(string[] urls)
+        public async Task<string[]> GetAllPdfAsync(string[] urls, string pathToSaveTemporalPdf)
         {
             _logger.LogDebug($"url length {urls.Length}");
             Task<byte[]>[] tasks = new Task<byte[]>[urls.Length];
+            string[] contents = new string[urls.Length];
             
             //Paralelize processing
             //Implementing "for" instead of "foreach" to preserve the order of the items
@@ -33,14 +35,26 @@ namespace PdfMerger.Domain
             {
                 _logger.LogDebug($"Processing with ThreadId {Thread.CurrentThread.ManagedThreadId}");
 
-                tasks[index]=(_externalContentRepository.GetBinaryContentFromUlrAsync(urls[index]));
+                var task = _externalContentRepository.GetBinaryContentFromUlrAsync(urls[index]);
+                task.ContinueWith(f =>
+                {
+                    //After complete task it save pdf in a temp folder
+                    string file = Path.Combine(pathToSaveTemporalPdf, $"pdfTemp{DateTime.Now:yyyyMMddHHmmss}_{Thread.CurrentThread.ManagedThreadId}.pdf");
+                    _logger.LogDebug($"Writing content {file}");
+                    File.WriteAllBytes(file, f.Result);
+                    contents[index] = file;
+                });
+                tasks[index]=task;
             });
             
-            Task.WaitAll(tasks.ToArray());//Wait to finish all processes
+            await Task.WhenAll(tasks.ToArray());//Wait to finish all processes
 
-            var bytesList = tasks.Select(f => f.Result).ToList();
-            return bytesList;
-
+            return contents;
         }
+    }
+
+    public class Content
+    {
+        public string File { get; set; }
     }
 }

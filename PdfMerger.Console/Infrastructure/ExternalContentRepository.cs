@@ -14,16 +14,19 @@ namespace PdfMerger.Infrastructure
     public class ExternalContentRepository : IExternalContentRepository
     {
         private readonly ILogger<ExternalContentRepository> _logger;
+       // private readonly IHttpClientFactory _httpClientFactory;
 
-        public ExternalContentRepository(ILogger<ExternalContentRepository> logger)
+        public ExternalContentRepository(ILogger<ExternalContentRepository> logger)//, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+          //  _httpClientFactory = httpClientFactory;
         }
         public async Task<byte[]> GetBinaryContentFromUlrAsync(string url)
         {
             _logger.LogInformation($"Processing {url}");
             var sw = new Stopwatch();
             sw.Start();
+            //using var client = _httpClientFactory.CreateClient("pdfClient");
             using var client = new HttpClient();
             HttpResponseMessage msg = await client.GetAsync(url);
 

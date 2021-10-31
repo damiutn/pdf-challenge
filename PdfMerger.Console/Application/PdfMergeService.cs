@@ -30,15 +30,16 @@ namespace PdfMerger.Application
         public async Task<string> MergePdfsAsync(string[] urls)
         {
             ValidateInput(urls);
-
-            var contents = _contentExtractor.GetContents(urls);
-            var pdfMerged = _pdf.MergePdfs(contents);
-
-            string pathToSavePdf = _config.Value.PathToSaveMergedPdf;
-            //Create the directory does not exist
-            Directory.CreateDirectory(pathToSavePdf);
-
-            string file = Path.Combine(pathToSavePdf, $"pdfMerged_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+            string pathToSaveMergedPdf = _config.Value.PathToSaveMergedPdf;
+            string pathToSaveTemporalPdf = _config.Value.PathToSaveTemporalPdf;
+            //Create the directory if does not exist
+            Directory.CreateDirectory(pathToSaveMergedPdf);
+            Directory.CreateDirectory(pathToSaveTemporalPdf);
+            
+            var pdfFiles = await _contentExtractor.GetAllPdfAsync(urls, pathToSaveTemporalPdf);
+            var pdfMerged = _pdf.MergePdfFiles(pdfFiles);
+            
+            string file = Path.Combine(pathToSaveMergedPdf, $"pdfMerged_{DateTime.Now:yyyyMMddHHmmss}.pdf");
             await File.WriteAllBytesAsync(file, pdfMerged);
 
             return file;

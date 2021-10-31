@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,6 +73,27 @@ namespace PdfMerger
             serviceCollection.AddTransient<IExternalContentRepository,ExternalContentRepository>();
             serviceCollection.AddTransient<IContentExtractor,ContentExtractor>();
             serviceCollection.Configure<PdfMergerOptions>(_configuration.GetSection("PdfMergerConfig"));
+
+            #endregion
+
+
+            #region Http client
+            //I Configured  httpClient to get pdf content
+            //Notice that  I'm using polly for resilience
+
+            serviceCollection.AddHttpClient("pdfClient", (_, c) =>
+                {
+                })
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var handler = new HttpClientHandler
+                    {
+                        AllowAutoRedirect = false
+                    };
+                    handler.ServerCertificateCustomValidationCallback += (_, _, _, _) => true;
+                    return handler;
+                }).AddPolicyHandler(PollyPolicyBuilder.BuildRetryPolicy());
+
 
             #endregion
         }

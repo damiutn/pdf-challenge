@@ -1,36 +1,41 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.Extensions.Logging;
 using PdfMerger.Domain.Exceptions;
 
 namespace PdfMerger.Domain
 {
     public interface IPdf
     {
-        byte[] MergePdfs(List<byte[]> pdfContents);
+        byte[] MergePdfFiles(string[] pdfFiles);
     }
 
     public class Pdf : IPdf
     {
-        public byte[] MergePdfs(List<byte[]> pdfContents)
+        private readonly ILogger _logger;
+
+        public Pdf(ILogger<Pdf> logger)
         {
-            ValidateInput(pdfContents);
+            _logger = logger;
+        }
+        public byte[] MergePdfFiles(string[] pdfFiles)
+        {
+            ValidateInput(pdfFiles);
             using MemoryStream stream = new ();
             Document doc = null;
             PdfCopy pdf = null;
-            PdfReader reader = null;
+            PdfReader reader;
             try
             {
                 doc = new Document();
                 pdf = new PdfCopy(doc, stream) { CloseStream = false };
                 doc.Open();
 
-                foreach (var content in pdfContents)
+                foreach (var tempFile in pdfFiles)
                 {
-                    reader = new PdfReader(content);
+                    reader = new PdfReader(tempFile);
                     for (int i = 0; i < reader.NumberOfPages; i++)
                     {
                         var page = pdf.GetImportedPage(reader, i + 1);
@@ -43,26 +48,26 @@ namespace PdfMerger.Domain
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
+                throw;
 
             }
             finally
             {
-                reader?.Close();
-                doc?.Close();
-                pdf?.Close();
+               
+                pdf?.Close(); //It is not possible to use using
+                doc?.Close(); //It is not possible to use using
+               
             }
 
             return stream.ToArray();
         }
 
-        private void ValidateInput(List<byte[]> pdfContents)
+        private void ValidateInput(string[] pdfs)
         {
-            if (pdfContents.Count < 2)
+            if (pdfs.Length < 2)
                 throw new BusinessException("At least 2 items are required");
 
-            if(pdfContents.Any(f=>f.Length ==0))
-                throw new BusinessException("Invalid content");
         }
     }
 
