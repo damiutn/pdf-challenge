@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using PdfMerger.Domain.Exceptions;
 
 namespace PdfMerger.Infrastructure
@@ -12,17 +13,28 @@ namespace PdfMerger.Infrastructure
 
     public class ExternalContentRepository : IExternalContentRepository
     {
+        private readonly ILogger<ExternalContentRepository> _logger;
+
+        public ExternalContentRepository(ILogger<ExternalContentRepository> logger)
+        {
+            _logger = logger;
+        }
         public async Task<byte[]> GetBinaryContentFromUlrAsync(string url)
         {
-            Console.WriteLine("Processing " + url);
-            using HttpClient client = new HttpClient();
+            _logger.LogInformation($"Processing {url}");
+            var sw = new Stopwatch();
+            sw.Start();
+            using var client = new HttpClient();
             HttpResponseMessage msg = await client.GetAsync(url);
 
             if (!msg.IsSuccessStatusCode)
             {
+
                 throw new BusinessException($"URL: {url}. Response code: {msg.IsSuccessStatusCode}");
             }
             var contentStream = await msg.Content.ReadAsByteArrayAsync();
+            sw.Stop();
+            _logger.LogInformation($"Processed {url} in {sw.ElapsedMilliseconds} ms");
             return contentStream;
         }
     }

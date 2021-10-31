@@ -8,7 +8,7 @@ using PdfMerger.Application;
 using PdfMerger.Domain.Exceptions;
 using Xunit;
 
-namespace PdfMerger.Test
+namespace PdfMerger.UnitTest
 {
     public class AppTest
     {
@@ -43,10 +43,9 @@ namespace PdfMerger.Test
         public void Test2()
         {
             //Arrage
-            var urlWithPdfList = new List<string>();
 
             //Act
-            Func<Task> act = () => _app.RunAsync(urlWithPdfList.ToArray());
+            Func<Task> act = () => _app.RunAsync(new List<string>().ToArray());
             //Assert
             act.Should().ThrowAsync<ArgumentException>("Exception is expected");
 

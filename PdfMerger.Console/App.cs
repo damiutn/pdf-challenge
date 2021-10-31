@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PdfMerger.Application;
@@ -22,7 +23,9 @@ namespace PdfMerger
             _pdfMergeService = pdfMergeService;
         }
         public async Task RunAsync(string[] args)
-        {
+        { 
+            var sw = new Stopwatch();
+            sw.Start();
             if (args == null || args.Length < 2)
                 throw new ArgumentException("At least 2 parameters are expected");
 
@@ -30,7 +33,11 @@ namespace PdfMerger
             var pdfMerdedCreated =await _pdfMergeService.MergePdfsAsync(args);
 
             _logger.LogInformation($"PDF file created {pdfMerdedCreated}");
-            _logger.LogInformation("Finishing process");
+
+            sw.Stop();
+            _logger.LogInformation($"Finishing process in {sw.ElapsedMilliseconds} ms");
+
+
         }
     }
 }

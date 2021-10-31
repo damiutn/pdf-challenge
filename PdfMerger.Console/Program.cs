@@ -14,12 +14,12 @@ namespace PdfMerger
 {
     public class Program
     {
-        public static IConfigurationRoot Configuration;
-        static async Task Main(string[] args)
+        private static IConfigurationRoot _configuration;
+        public static async Task Main(string[] args)
         {
             // Create service collection
             Log.Information("Creating service collection");
-            ServiceCollection serviceCollection = new ServiceCollection();
+            var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
             // Create service provider
@@ -28,7 +28,7 @@ namespace PdfMerger
 
             // Initialize serilog logger
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console(Serilog.Events.LogEventLevel.Debug)
+                .WriteTo.Console()
                 .MinimumLevel.Debug()
                 .Enrich.FromLogContext()
                 .CreateLogger();
@@ -58,19 +58,19 @@ namespace PdfMerger
             serviceCollection.AddLogging();
 
             // Build configuration
-            Configuration = new ConfigurationBuilder()
+            _configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
                 .AddJsonFile("appsettings.json", false)
                 .Build();
 
             #region Inversion Of Control
-            serviceCollection.AddSingleton(Configuration);
+            serviceCollection.AddSingleton(_configuration);
             serviceCollection.AddTransient<IApp,App>();
             serviceCollection.AddTransient<IPdfMergeService, PdfMergeService>();
             serviceCollection.AddTransient<IPdf,Pdf>();
             serviceCollection.AddTransient<IExternalContentRepository,ExternalContentRepository>();
             serviceCollection.AddTransient<IContentExtractor,ContentExtractor>();
-            serviceCollection.Configure<PdfMergerOptions>(Configuration.GetSection("PdfMergerConfig"));
+            serviceCollection.Configure<PdfMergerOptions>(_configuration.GetSection("PdfMergerConfig"));
 
             #endregion
         }

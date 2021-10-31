@@ -8,7 +8,7 @@ using PdfMerger.Domain;
 using PdfMerger.Shared;
 using Xunit;
 
-namespace PdfMerger.Test.Application
+namespace PdfMerger.UnitTest.Application
 {
     public class PdfMergeServiceTest
     {

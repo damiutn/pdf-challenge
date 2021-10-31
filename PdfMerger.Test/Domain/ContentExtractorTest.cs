@@ -5,7 +5,7 @@ using PdfMerger.Domain;
 using PdfMerger.Infrastructure;
 using Xunit;
 
-namespace PdfMerger.Test.Domain
+namespace PdfMerger.UnitTest.Domain
 {
     public class ContentExtractorTest
     {
@@ -17,7 +17,7 @@ namespace PdfMerger.Test.Domain
             var contentExtractorMock = new Mock<ILogger<ContentExtractor>>();
             var contentExtractor = new ContentExtractor(contentExtractorMock.Object, externalContentRepositoryMock.Object);
             var param = new[] { "http://url/pdf.pdf", "http://url/pdf.pdf" };
-            byte[] value = new byte[2]{1,2};
+            byte[] value = {1,2};
             externalContentRepositoryMock.Setup(f => f.GetBinaryContentFromUlrAsync(It.IsAny<string>()))
                 .ReturnsAsync(value);
             //act

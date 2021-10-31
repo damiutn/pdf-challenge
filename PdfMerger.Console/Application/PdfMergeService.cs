@@ -49,7 +49,7 @@ namespace PdfMerger.Application
             if (urls == null || urls.Length < 2)
                 throw new BusinessException("At least two arguments are required");
 
-            List<string> badArguments = new List<string>();
+            var badArguments = new List<string>();
 
 
             foreach (string arg in urls)

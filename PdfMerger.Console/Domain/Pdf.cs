@@ -18,7 +18,7 @@ namespace PdfMerger.Domain
         public byte[] MergePdfs(List<byte[]> pdfContents)
         {
             ValidateInput(pdfContents);
-            using MemoryStream stream = new MemoryStream();
+            using MemoryStream stream = new ();
             Document doc = null;
             PdfCopy pdf = null;
             PdfReader reader = null;
@@ -41,7 +41,7 @@ namespace PdfMerger.Domain
                     reader.Close();
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
 
